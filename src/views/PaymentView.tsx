@@ -37,8 +37,8 @@ export const PaymentView: React.FC = () => {
   const [copied, setCopied] = useState<boolean>(false);
   const [isQRZoomOpen, setIsQRZoomOpen] = useState<boolean>(false);
 
-  const receiverName = "Lorem Ipsum";
-  const upiId = "0000000000@testbank";
+  const receiverName = "Fernandez Allen";
+  const upiId = "9054377338@ptsbi";
   
   // Format standard UPI URL
   // upi://pay?pa=9054377338@ptsbi&pn=Fernandez%20Allen&am=<TOTAL>&cu=INR&tn=<ORDER_ID>
@@ -48,19 +48,19 @@ export const PaymentView: React.FC = () => {
   const handleCopyUpi = () => {
     navigator.clipboard.writeText(upiId);
     setCopied(true);
-    addToast("Lorem ipsum dolor sit amet.", "success");
+    addToast("UPI ID Copied to clipboard!", "success");
     setTimeout(() => setCopied(false), 2000);
   };
 
   // Launch UPI App Deep Link
   const handleUpiAppClick = (appName: string) => {
-    addToast("Lorem ipsum dolor sit amet.", "info");
+    addToast(`Launching ${appName}...`, "info");
     
     // Attempt to open the deep link
     window.open(upiUrl, '_blank');
     
     setTimeout(() => {
-      addToast("Lorem ipsum dolor sit amet.", "info");
+      addToast("If redirect failed or you are on desktop, please scan the QR Code instead.", "info");
     }, 1500);
   };
 
@@ -70,14 +70,14 @@ export const PaymentView: React.FC = () => {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      addToast("Lorem ipsum dolor sit amet", "error");
+      addToast("Please upload an image file (PNG/JPG)", "error");
       return;
     }
 
     const reader = new FileReader();
     reader.onload = () => {
       setScreenshot(reader.result as string);
-      addToast("Lorem ipsum dolor sit amet.", "success");
+      addToast("Payment receipt screenshot uploaded!", "success");
     };
     reader.readAsDataURL(file);
   };
@@ -85,7 +85,7 @@ export const PaymentView: React.FC = () => {
   // Delete Screenshot
   const handleRemoveScreenshot = () => {
     setScreenshot(null);
-    addToast("Lorem ipsum dolor sit amet", "info");
+    addToast("Screenshot removed", "info");
   };
 
   // Format Timer output (MM:SS)
@@ -105,7 +105,7 @@ export const PaymentView: React.FC = () => {
     setUtr('');
     setScreenshot(null);
     setTermsAccepted(false);
-    addToast("Lorem ipsum dolor sit amet.", "success");
+    addToast("New payment session generated!", "success");
   };
 
   // Handle Form Submission
@@ -139,22 +139,22 @@ export const PaymentView: React.FC = () => {
             exit={{ opacity: 0 }}
             className="max-w-md mx-auto text-center glass-panel border-rose-500/30 rounded-3xl p-8 space-y-6 my-10"
           >
-              <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto text-rose-500">
+            <div className="w-16 h-16 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto text-rose-500">
               <Clock className="w-8 h-8 animate-pulse" />
             </div>
             <div className="space-y-2">
               <h2 className="text-2xl font-black font-orbitron text-rose-400 uppercase tracking-wide">
-                Lorem ipsum dolor sit amet
+                Payment Session Expired
               </h2>
               <p className="text-xs text-gray-400 font-sans leading-relaxed">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                For security reasons and real-time slot allocation, payment sessions are limited to 15 minutes. The current ticket reservation has been cancelled.
               </p>
             </div>
             <button
               onClick={handleGenerateNewPayment}
               className="w-full py-3.5 bg-gradient-to-r from-cyber-purple to-cyber-pink border border-purple-400/20 text-white rounded-xl font-bold font-orbitron text-xs uppercase tracking-widest cursor-pointer shadow-lg shadow-purple-950/20 hover:scale-[1.02] transition-transform duration-200"
             >
-              Lorem Ipsum
+              Generate New Payment
             </button>
           </motion.div>
         ) : (
@@ -173,7 +173,7 @@ export const PaymentView: React.FC = () => {
                 <div className="flex items-center gap-2">
                   <Clock className={`w-5 h-5 ${timer < 180 ? 'text-rose-400 animate-spin' : 'text-cyber-cyan'}`} />
                   <span className="text-xs font-bold font-orbitron uppercase tracking-wider">
-                    {timer < 180 ? "Lorem ipsum dolor" : "Lorem ipsum"}
+                    {timer < 180 ? "Time Running Out!" : "Payment Session Clock"}
                   </span>
                 </div>
                 <span className="text-xl font-black font-orbitron tracking-widest">
@@ -189,10 +189,10 @@ export const PaymentView: React.FC = () => {
 
                 <div className="space-y-1">
                   <h3 className="text-sm font-bold font-orbitron text-gray-300 uppercase tracking-widest">
-                    Lorem ipsum dolor sit amet
+                    Scan QR Code to Pay
                   </h3>
                   <p className="text-[10px] text-gray-500 font-sans">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Scan this dynamic QR code using any UPI app to transfer exactly the bundle amount.
                   </p>
                 </div>
 
@@ -206,13 +206,13 @@ export const PaymentView: React.FC = () => {
                   />
                   <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl flex items-center justify-center gap-2 text-white">
                     <Maximize2 className="w-5 h-5 text-cyber-cyan" />
-                    <span className="text-[10px] font-bold font-orbitron uppercase tracking-wider text-cyber-cyan">Lorem Ipsum</span>
+                    <span className="text-[10px] font-bold font-orbitron uppercase tracking-wider text-cyber-cyan">Expand QR</span>
                   </div>
                 </div>
 
                 {/* Amount display */}
                 <div className="space-y-0.5">
-                  <span className="text-[10px] uppercase font-bold font-orbitron text-gray-500 tracking-wider">Lorem ipsum</span>
+                  <span className="text-[10px] uppercase font-bold font-orbitron text-gray-500 tracking-wider">Amount To Pay</span>
                   <div className="text-3xl font-black font-rajdhani text-cyber-cyan glow-text-cyan">
                     ₹{pricing.final}
                   </div>
@@ -221,12 +221,12 @@ export const PaymentView: React.FC = () => {
                 {/* Accepted by all UPI Apps banner */}
                 <div className="w-full border-t border-white/5 pt-4 space-y-3">
                   <span className="text-[9px] uppercase font-bold font-orbitron text-gray-400 tracking-widest block">
-                    Lorem ipsum dolor sit amet
+                    Accepted by all UPI Apps
                   </span>
                   
                   {/* Wallets grid */}
                   <div className="grid grid-cols-4 gap-2">
-                    {['App A', 'App B', 'App C', 'App D'].map((wallet) => (
+                    {['Google Pay', 'PhonePe', 'Paytm', 'BHIM'].map((wallet) => (
                       <button
                         key={wallet}
                         onClick={() => handleUpiAppClick(wallet)}
@@ -247,22 +247,22 @@ export const PaymentView: React.FC = () => {
               {/* Order Info Panel */}
               <div className="glass-panel border-cyber-purple/15 rounded-2xl p-5 shadow-xl space-y-4">
                 <h3 className="text-sm font-bold font-orbitron text-white tracking-widest uppercase border-b border-white/5 pb-2.5">
-                  Lorem ipsum dolor
+                  Checkout details
                 </h3>
 
                 <div className="space-y-3 text-xs">
                   <div className="flex justify-between items-center py-1">
-                    <span className="text-gray-400 font-sans">Lorem ipsum</span>
+                    <span className="text-gray-400 font-sans">Order Reference</span>
                     <span className="font-bold font-orbitron text-cyber-cyan tracking-wider">{details.orderId}</span>
                   </div>
 
                   <div className="flex justify-between items-center py-1 border-t border-white/5">
-                    <span className="text-gray-400 font-sans">Lorem ipsum</span>
+                    <span className="text-gray-400 font-sans">Receiver Name</span>
                     <span className="font-bold text-gray-200 font-sans">{receiverName}</span>
                   </div>
 
                   <div className="flex justify-between items-center py-1 border-t border-white/5">
-                    <span className="text-gray-400 font-sans">Lorem ipsum</span>
+                    <span className="text-gray-400 font-sans">UPI Address</span>
                     <div className="flex items-center gap-2">
                       <span className="font-semibold text-gray-200 font-sans">{upiId}</span>
                       <button
@@ -277,7 +277,7 @@ export const PaymentView: React.FC = () => {
                   </div>
 
                   <div className="flex justify-between items-center py-1 border-t border-white/5">
-                    <span className="text-gray-400 font-sans">Lorem ipsum</span>
+                    <span className="text-gray-400 font-sans">Selected Games</span>
                     <span className="font-bold text-gray-200 font-orbitron">
                       {selectedGames.map((g) => g.name).join(', ')}
                     </span>
@@ -288,30 +288,30 @@ export const PaymentView: React.FC = () => {
               {/* Verification Form */}
               <form onSubmit={handleSubmitPayment} className="glass-panel border-cyber-purple/15 rounded-2xl p-5 shadow-xl space-y-4">
                 <h3 className="text-sm font-bold font-orbitron text-white tracking-widest uppercase border-b border-white/5 pb-2.5">
-                  Lorem ipsum dolor
+                  Payment Verification
                 </h3>
 
                 {/* UTR Input */}
                 <div className="space-y-1.5 text-left">
                   <label className="text-[10px] font-bold font-orbitron uppercase tracking-wider text-gray-400">
-                    Lorem ipsum dolor
+                    12-Digit Transaction ID (UTR)
                   </label>
                   <input
                     type="text"
                     value={utr}
                     onChange={handleUtrChange}
-                    placeholder="Lorem ipsum dolor sit amet"
+                    placeholder="Enter 12-Digit UTR number"
                     className="w-full px-4 py-2.5 rounded-xl bg-black/45 border border-cyber-purple/15 font-mono text-sm text-white placeholder-gray-600 focus:outline-none focus:border-cyber-cyan focus:shadow-[0_0_10px_rgba(6,182,212,0.15)] transition-all duration-200"
                   />
                   <p className="text-[9px] text-gray-500 font-sans pl-1">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                    Provide the 12-digit reference number found on your UPI transaction invoice history.
                   </p>
                 </div>
 
                 {/* Screenshot Upload Box */}
                 <div className="space-y-1.5 text-left">
                   <label className="text-[10px] font-bold font-orbitron uppercase tracking-wider text-gray-400">
-                    Lorem ipsum dolor
+                    Upload Payment Receipt
                   </label>
 
                   {screenshot ? (
@@ -319,7 +319,7 @@ export const PaymentView: React.FC = () => {
                     <div className="relative w-full h-32 rounded-xl border border-cyber-cyan/35 overflow-hidden group">
                       <img
                         src={screenshot}
-                        alt="Lorem ipsum preview"
+                        alt="Receipt Screenshot Preview"
                         className="w-full h-full object-cover"
                       />
                       <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-all duration-200">
@@ -343,10 +343,10 @@ export const PaymentView: React.FC = () => {
                       />
                       <Upload className="w-7 h-7 text-cyber-purple animate-bounce" />
                       <span className="text-xs text-gray-400 font-semibold font-sans">
-                        Lorem ipsum dolor sit amet
+                        Click to Upload Screenshot
                       </span>
                       <span className="text-[9px] text-gray-600 font-sans">
-                        JPG up to 5MB
+                        PNG or JPG up to 5MB
                       </span>
                     </label>
                   )}
@@ -361,7 +361,7 @@ export const PaymentView: React.FC = () => {
                     className="mt-1 rounded bg-black border-cyber-purple/30 text-cyber-cyan focus:ring-cyber-cyan cursor-pointer"
                   />
                   <span className="text-[10px] text-gray-400 font-sans leading-normal">
-                    Lorem ipsum <span className="font-bold text-cyber-cyan font-rajdhani text-xs">₹{pricing.final}</span> dolor sit amet.
+                    I verify that I have transferred <span className="font-bold text-cyber-cyan font-rajdhani text-xs">₹{pricing.final}</span> to the recipient's UPI address above, and that the transaction details provided match exactly.
                   </span>
                 </label>
 
@@ -376,7 +376,7 @@ export const PaymentView: React.FC = () => {
                   }`}
                 >
                   <ShieldCheck className="w-4.5 h-4.5" />
-                  Lorem Ipsum
+                  Submit Registration Receipt
                 </button>
               </form>
             </div>
